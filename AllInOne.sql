@@ -1,3 +1,5 @@
+
+-- select
 select CustomerID
 from Orders
 
@@ -112,6 +114,158 @@ DELETE FROM Customers WHERE ContactName='Alfreds Futterkiste';
 
 
 -- drop
-DROP TABLE Customers;
+-- DROP TABLE Customers;
 
 
+
+-- top
+SELECT TOP 3
+    *
+FROM Customers;
+
+SELECT TOP 3
+    *
+FROM Customers
+ORDER BY CompanyName DESC;
+
+SELECT TOP 50 PERCENT
+    *
+FROM Customers;
+
+
+SELECT TOP 3
+    *
+FROM Customers
+WHERE Country='Germany';
+
+
+
+-- Min and Max
+SELECT MIN(UnitPrice)
+FROM Products;
+
+SELECT MAX(UnitPrice)
+FROM Products;
+
+
+
+-- count
+SELECT COUNT(UnitPrice)
+FROM Products;
+
+SELECT COUNT(DISTINCT UnitPrice)
+FROM Products;
+
+SELECT COUNT(ProductID)
+FROM Products
+WHERE UnitPrice > 20;
+
+
+-- sum
+SELECT SUM(Quantity)
+FROM [Order Details];
+
+SELECT SUM(Quantity)
+FROM [Order Details]
+WHERE ProductId = 11;
+
+
+-- avg
+SELECT AVG(UnitPrice)
+FROM Products;
+
+SELECT AVG(UnitPrice)
+FROM Products
+WHERE CategoryID = 1
+
+
+
+-- Wildcards
+-- select where name starts with mi (not case sensitive)
+select *
+from Customers
+WHERE
+    ContactName LIKE 'mi%';
+
+-- select where name ends with e (not case sensitive)
+select *
+from Customers
+WHERE
+    ContactName LIKE '%a';
+
+-- all that includes mm whether it is in start, end or between
+-- select where name has with mm in between (not case sensitive)
+select *
+from Customers
+WHERE
+    ContactName LIKE '%mm%';
+
+-- select where name has with a at second last place
+select *
+from Customers
+WHERE
+    ContactName LIKE '%a_';
+
+-- select where name has with a at third last place
+select *
+from Customers
+WHERE
+    ContactName LIKE '%a__';
+
+
+
+-- In
+SELECT *
+FROM Customers
+WHERE Country IN ('Germany', 'France', 'UK');
+-- select in array
+-- %%%%%%%%%%%%% (IMP) %%%%%%%%%%%%%
+SELECT *
+FROM Customers
+WHERE CustomerID IN (SELECT CustomerID
+FROM Orders);
+
+SELECT *
+FROM Customers
+WHERE CustomerID NOT IN (SELECT CustomerID
+FROM Orders);
+
+
+
+-- between
+SELECT *
+FROM Products
+WHERE UnitPrice BETWEEN 10 AND 20;
+
+
+SELECT *
+FROM Products
+WHERE UnitPrice NOT BETWEEN 10 AND 20;
+
+
+SELECT *
+FROM Products
+WHERE UnitPrice BETWEEN 10 AND 20
+    AND CategoryID IN (1,2,3);
+
+-- alphabetically between c and m
+SELECT *
+FROM Products
+WHERE ProductName BETWEEN 'Carnarvon Tigers' AND 'Mozzarella di Giovanni'
+ORDER BY ProductName;
+
+-- between dates
+SELECT *
+FROM Orders
+WHERE OrderDate BETWEEN '1996-07-01' AND '1996-07-31';
+
+
+
+-- Alias
+SELECT ProductName AS [My Great Products]
+FROM Products;
+
+
+SELECT o.OrderID, o.OrderDate, c.ContactName
+FROM Customers AS c, Orders AS o
+WHERE c.ContactName='Around the Horn' AND c.CustomerID=o.CustomerID;
