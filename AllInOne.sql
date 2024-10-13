@@ -265,7 +265,138 @@ WHERE OrderDate BETWEEN '1996-07-01' AND '1996-07-31';
 SELECT ProductName AS [My Great Products]
 FROM Products;
 
-
 SELECT o.OrderID, o.OrderDate, c.ContactName
 FROM Customers AS c, Orders AS o
 WHERE c.ContactName='Around the Horn' AND c.CustomerID=o.CustomerID;
+
+
+
+-- Inner Join
+--  selects records that have matching values in both tables.
+SELECT Products.ProductID, Products.ProductName, Categories.CategoryName
+FROM Products
+    JOIN Categories ON Products.CategoryID = Categories.CategoryID;
+
+SELECT Orders.OrderID, Customers.ContactName, Shippers.CompanyName
+FROM ((Orders
+    INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID)
+    INNER JOIN Shippers ON Orders.ShipVia = Shippers.ShipperID);
+
+
+
+-- Left join
+-- The LEFT JOIN keyword returns all records from the left table (Customers), even if there are no matches in the right table (Orders).
+SELECT Customers.ContactName, Orders.OrderID
+FROM Customers
+    LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+ORDER BY Customers.ContactName;
+
+
+
+-- Right Join
+-- The RIGHT JOIN keyword returns all records from the right table (Employees), even if there are no matches in the left table (Orders).
+SELECT Orders.OrderID, Employees.LastName, Employees.FirstName
+FROM Orders
+    RIGHT JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+ORDER BY Orders.OrderID;
+
+
+
+-- Full Join
+SELECT Customers.ContactName, Orders.OrderID
+FROM Customers
+    FULL OUTER JOIN Orders ON Customers.CustomerID=Orders.CustomerID
+ORDER BY Customers.ContactName;
+
+
+
+-- self join
+SELECT A.ContactName AS CustomerName1, B.ContactName AS CustomerName2, A.City
+FROM Customers A, Customers B
+WHERE A.CustomerID <> B.CustomerID
+    AND A.City = B.City
+ORDER BY A.City;
+-- <> means select where they are not equal
+
+
+
+-- union
+    SELECT City
+    FROM Customers
+UNION
+    SELECT City
+    FROM Suppliers
+ORDER BY City;
+
+    SELECT City, Country
+    FROM Customers
+    WHERE Country='Germany'
+UNION
+    SELECT City, Country
+    FROM Suppliers
+    WHERE Country='Germany'
+ORDER BY City;
+
+
+-- union all
+    SELECT City
+    FROM Customers
+UNION ALL
+    SELECT City
+    FROM Suppliers
+ORDER BY City;
+
+    SELECT City, Country
+    FROM Customers
+    WHERE Country='Germany'
+UNION ALL
+    SELECT City, Country
+    FROM Suppliers
+    WHERE Country='Germany'
+ORDER BY City;
+
+
+
+-- group by
+
+-- GROUP BY statement groups rows that have the same values into summary rows, like "find the number of customers in each country".
+-- The GROUP BY statement is often used with aggregate functions (COUNT(), MAX(), MIN(), SUM(), AVG()) to group the result-set by one or more columns.
+
+SELECT COUNT(CustomerID), Country
+FROM Customers
+GROUP BY Country;
+
+
+SELECT COUNT(CustomerID), Country
+FROM Customers
+GROUP BY Country
+ORDER BY COUNT(CustomerID) DESC;
+
+SELECT Shippers.CompanyName, COUNT(Orders.OrderID) AS NumberOfOrders
+FROM Orders
+    LEFT JOIN Shippers ON Orders.ShipVia = Shippers.ShipperID
+GROUP BY CompanyName;
+
+
+
+-- having
+-- The HAVING clause was added to SQL because the WHERE keyword cannot be used with aggregate functions.
+
+SELECT COUNT(CustomerID), Country
+FROM Customers
+GROUP BY Country
+HAVING COUNT(CustomerID) > 5;
+
+SELECT COUNT(CustomerID), Country
+FROM Customers
+GROUP BY Country
+HAVING COUNT(CustomerID) > 5
+ORDER BY COUNT(CustomerID) DESC;
+
+
+SELECT Employees.LastName, COUNT(Orders.OrderID) AS NumberOfOrders
+FROM Orders
+    INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+WHERE LastName = 'Davolio' OR LastName = 'Fuller'
+GROUP BY LastName
+HAVING COUNT(Orders.OrderID) > 25;
